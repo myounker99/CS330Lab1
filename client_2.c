@@ -18,7 +18,7 @@ int main(int argc, char * argv[])
   struct sockaddr_in sin;
   char *host;
   char buf[MAX_LINE];
-  int s, new_s;
+  int s;
   int len;
   
   if (argc==2) 
