@@ -3,6 +3,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <unistd.h>
 
 #define SERVER_PORT 50421
 #define MAX_PENDING 5
