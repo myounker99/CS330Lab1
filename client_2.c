@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define SERVER_PORT 50421
+#define SERVER_PORT 80
 #define MAX_LINE 256
 
 int main(int argc, char * argv[])
@@ -18,7 +18,7 @@ int main(int argc, char * argv[])
   struct sockaddr_in sin;
   char *host;
   char buf[MAX_LINE];
-  int s;
+  int s, new_s;
   int len;
   
   if (argc==2) 
@@ -57,11 +57,26 @@ int main(int argc, char * argv[])
     close(s);
     exit(1);
   }
+  
   /* main loop: get and send lines of text */
   while (fgets(buf, sizeof(buf), stdin)) 
   {
+    //request vars
+    char req[MAX_LINE] = {0};
     buf[MAX_LINE-1] = '\0';
-    len = strlen(buf) + 1;
-    send(s, buf, len, 0);
+    
+    //sends formatted request to server
+    //used https://aticleworld.com/http-get-and-post-methods-example-in-c/ to help create format for GET request
+    sprintf(req, "GET /%s HTTP/1.1\r\nHost: %s\r\nContent-Type: text/plain\r\n\r\n", buf, host);
+    len = strlen(req) + 1;
+    send(s, req, len, 0);
+    
+    //the server returns a response
+    char serverResponse[MAX_LINE] = {0};
+    while(len = recv(s, serverResponse, sizeof(serverResponse), 0))
+    {
+      //outputs response
+      fputs(serverResponse, stdout);
+    }
   }
 }
